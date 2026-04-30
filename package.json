@@ -1,5 +1,5 @@
 {
-  "name": "@nanoclaw/shopify-analytics-mcp",
+  "name": "shopify-analytics-mcp",
   "version": "1.0.0",
   "description": "MCP server for ShopifyQL analytics queries — multi-store, read-only",
   "type": "module",
@@ -26,7 +26,8 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "access": "public"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bluemax713/shopify-analytics-mcp"
   }
 }
