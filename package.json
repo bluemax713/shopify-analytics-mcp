@@ -1,0 +1,32 @@
+{
+  "name": "@nanoclaw/shopify-analytics-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for ShopifyQL analytics queries — multi-store, read-only",
+  "type": "module",
+  "bin": {
+    "shopify-analytics-mcp": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
