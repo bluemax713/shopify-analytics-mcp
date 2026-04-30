@@ -28,6 +28,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/bluemax713/shopify-analytics-mcp"
+    "url": "git+https://github.com/bluemax713/shopify-analytics-mcp.git"
   }
 }
