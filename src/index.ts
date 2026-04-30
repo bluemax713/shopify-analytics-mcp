@@ -4,6 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { loadStores } from "./stores.js";
 import { runShopifyQL } from "./shopifyql.js";
+import { queryOrdersByDate } from "./orders.js";
 
 const stores = loadStores();
 
@@ -72,6 +73,47 @@ server.tool(
             text: JSON.stringify(result, null, 2),
           },
         ],
+      };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return {
+        content: [{ type: "text", text: `Query failed: ${message}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
+server.tool(
+  "query_orders_by_date",
+  "Query orders and compute sales metrics for a date range. Works on all Shopify plans. " +
+  "Returns order count, gross sales, discounts, shipping, refunds, and net sales. " +
+  "Also returns individual order breakdown. Use run_shopifyql instead if the store is on Shopify Plus.",
+  {
+    store: z
+      .string()
+      .describe("Store ID to query. Use list_stores to see available IDs."),
+    date_from: z
+      .string()
+      .describe("Start date in YYYY-MM-DD format (inclusive)"),
+    date_to: z
+      .string()
+      .describe("End date in YYYY-MM-DD format (inclusive). Use same date as date_from for a single day."),
+  },
+  async ({ store, date_from, date_to }) => {
+    const storeConfig = stores.get(store);
+    if (!storeConfig) {
+      const available = Array.from(stores.keys()).join(", ");
+      return {
+        content: [{ type: "text", text: `Unknown store "${store}". Available stores: ${available}` }],
+        isError: true,
+      };
+    }
+
+    try {
+      const result = await queryOrdersByDate(storeConfig, date_from, date_to);
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
