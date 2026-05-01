@@ -9,7 +9,7 @@ const ORDER_FIELDS = `
   subtotalPriceSet { shopMoney { amount currencyCode } }
   totalShippingPriceSet { shopMoney { amount currencyCode } }
   totalDiscountsSet { shopMoney { amount currencyCode } }
-  currentTotalRefundsSet { shopMoney { amount currencyCode } }
+  totalRefundedSet { shopMoney { amount currencyCode } }
 `;
 async function fetchPage(domain, token, queryStr, cursor) {
     const url = `https://${domain}/admin/api/${API_VERSION}/graphql.json`;
@@ -67,7 +67,7 @@ export async function queryOrdersByDate(store, dateFrom, dateTo) {
         const gross = parse(o.subtotalPriceSet.shopMoney.amount) + parse(o.totalDiscountsSet.shopMoney.amount);
         const discounts = parse(o.totalDiscountsSet.shopMoney.amount);
         const shipping = parse(o.totalShippingPriceSet.shopMoney.amount);
-        const refunds = parse(o.currentTotalRefundsSet.shopMoney.amount);
+        const refunds = parse(o.totalRefundedSet.shopMoney.amount);
         const net = parse(o.subtotalPriceSet.shopMoney.amount) - refunds;
         grossSales += gross;
         totalDiscounts += discounts;

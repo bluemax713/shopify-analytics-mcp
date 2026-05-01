@@ -17,7 +17,7 @@ interface OrderNode {
   subtotalPriceSet: { shopMoney: MoneyV2 };
   totalShippingPriceSet: { shopMoney: MoneyV2 };
   totalDiscountsSet: { shopMoney: MoneyV2 };
-  currentTotalRefundsSet: { shopMoney: MoneyV2 };
+  totalRefundedSet: { shopMoney: MoneyV2 };
   lineItemsCount: { count: number } | null;
 }
 
@@ -70,7 +70,7 @@ const ORDER_FIELDS = `
   subtotalPriceSet { shopMoney { amount currencyCode } }
   totalShippingPriceSet { shopMoney { amount currencyCode } }
   totalDiscountsSet { shopMoney { amount currencyCode } }
-  currentTotalRefundsSet { shopMoney { amount currencyCode } }
+  totalRefundedSet { shopMoney { amount currencyCode } }
 `;
 
 async function fetchPage(
@@ -146,7 +146,7 @@ export async function queryOrdersByDate(
     const gross = parse(o.subtotalPriceSet.shopMoney.amount) + parse(o.totalDiscountsSet.shopMoney.amount);
     const discounts = parse(o.totalDiscountsSet.shopMoney.amount);
     const shipping = parse(o.totalShippingPriceSet.shopMoney.amount);
-    const refunds = parse(o.currentTotalRefundsSet.shopMoney.amount);
+    const refunds = parse(o.totalRefundedSet.shopMoney.amount);
     const net = parse(o.subtotalPriceSet.shopMoney.amount) - refunds;
 
     grossSales += gross;
