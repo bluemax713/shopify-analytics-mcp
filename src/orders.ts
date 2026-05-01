@@ -11,13 +11,13 @@ interface OrderNode {
   id: string;
   name: string;
   createdAt: string;
-  financialStatus: string;
+  displayFinancialStatus: string;
   cancelledAt: string | null;
   totalPriceSet: { shopMoney: MoneyV2 };
   subtotalPriceSet: { shopMoney: MoneyV2 };
   totalShippingPriceSet: { shopMoney: MoneyV2 };
   totalDiscountsSet: { shopMoney: MoneyV2 };
-  totalRefundedSet: { shopMoney: MoneyV2 };
+  currentTotalRefundsSet: { shopMoney: MoneyV2 };
   lineItemsCount: { count: number } | null;
 }
 
@@ -64,13 +64,13 @@ const ORDER_FIELDS = `
   id
   name
   createdAt
-  financialStatus
+  displayFinancialStatus
   cancelledAt
   totalPriceSet { shopMoney { amount currencyCode } }
   subtotalPriceSet { shopMoney { amount currencyCode } }
   totalShippingPriceSet { shopMoney { amount currencyCode } }
   totalDiscountsSet { shopMoney { amount currencyCode } }
-  totalRefundedSet { shopMoney { amount currencyCode } }
+  currentTotalRefundsSet { shopMoney { amount currencyCode } }
 `;
 
 async function fetchPage(
@@ -146,7 +146,7 @@ export async function queryOrdersByDate(
     const gross = parse(o.subtotalPriceSet.shopMoney.amount) + parse(o.totalDiscountsSet.shopMoney.amount);
     const discounts = parse(o.totalDiscountsSet.shopMoney.amount);
     const shipping = parse(o.totalShippingPriceSet.shopMoney.amount);
-    const refunds = parse(o.totalRefundedSet.shopMoney.amount);
+    const refunds = parse(o.currentTotalRefundsSet.shopMoney.amount);
     const net = parse(o.subtotalPriceSet.shopMoney.amount) - refunds;
 
     grossSales += gross;
@@ -158,7 +158,7 @@ export async function queryOrdersByDate(
       id: o.id,
       name: o.name,
       created_at: o.createdAt,
-      status: o.financialStatus,
+      status: o.displayFinancialStatus,
       gross: Math.round(gross * 100) / 100,
       discounts: Math.round(discounts * 100) / 100,
       shipping: Math.round(shipping * 100) / 100,

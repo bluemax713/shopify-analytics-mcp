@@ -3,13 +3,13 @@ const ORDER_FIELDS = `
   id
   name
   createdAt
-  financialStatus
+  displayFinancialStatus
   cancelledAt
   totalPriceSet { shopMoney { amount currencyCode } }
   subtotalPriceSet { shopMoney { amount currencyCode } }
   totalShippingPriceSet { shopMoney { amount currencyCode } }
   totalDiscountsSet { shopMoney { amount currencyCode } }
-  totalRefundedSet { shopMoney { amount currencyCode } }
+  currentTotalRefundsSet { shopMoney { amount currencyCode } }
 `;
 async function fetchPage(domain, token, queryStr, cursor) {
     const url = `https://${domain}/admin/api/${API_VERSION}/graphql.json`;
@@ -67,7 +67,7 @@ export async function queryOrdersByDate(store, dateFrom, dateTo) {
         const gross = parse(o.subtotalPriceSet.shopMoney.amount) + parse(o.totalDiscountsSet.shopMoney.amount);
         const discounts = parse(o.totalDiscountsSet.shopMoney.amount);
         const shipping = parse(o.totalShippingPriceSet.shopMoney.amount);
-        const refunds = parse(o.totalRefundedSet.shopMoney.amount);
+        const refunds = parse(o.currentTotalRefundsSet.shopMoney.amount);
         const net = parse(o.subtotalPriceSet.shopMoney.amount) - refunds;
         grossSales += gross;
         totalDiscounts += discounts;
@@ -77,7 +77,7 @@ export async function queryOrdersByDate(store, dateFrom, dateTo) {
             id: o.id,
             name: o.name,
             created_at: o.createdAt,
-            status: o.financialStatus,
+            status: o.displayFinancialStatus,
             gross: Math.round(gross * 100) / 100,
             discounts: Math.round(discounts * 100) / 100,
             shipping: Math.round(shipping * 100) / 100,
